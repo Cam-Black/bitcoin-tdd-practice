@@ -10,6 +10,8 @@ public class ConverterSvc {
 			return 100;
 		} else if (currency.equalsIgnoreCase("gbp")) {
 			return 200;
+		} else if (currency.equalsIgnoreCase("eur")) {
+			return 300;
 		}
 		return 0;
 	}
