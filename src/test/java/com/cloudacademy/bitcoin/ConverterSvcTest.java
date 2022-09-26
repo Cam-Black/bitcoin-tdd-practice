@@ -1,16 +1,21 @@
 package com.cloudacademy.bitcoin;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConverterSvcTest {
+	//Arrange
+	ConverterSvc converterSvc;
+	
+	@BeforeEach
+	public void init() {
+		converterSvc = new ConverterSvc();
+	}
 	
 	@Test
 	public void getExchangeRate_USD_ReturnsUSDExchangeRate() {
-		//Arrange
-		ConverterSvc converterSvc = new ConverterSvc();
-		
 		//Act
 		double actual = converterSvc.getExchangeRate("usd");
 		
@@ -21,9 +26,6 @@ public class ConverterSvcTest {
 	
 	@Test
 	public void getExchangeRate_GBP_ReturnsGBPExchangeRate() {
-		//Arrange
-		ConverterSvc converterSvc = new ConverterSvc();
-		
 		//Act
 		double actual = converterSvc.getExchangeRate("gbp");
 		
@@ -34,9 +36,6 @@ public class ConverterSvcTest {
 	
 	@Test
 	public void getExchangeRate_EUR_ReturnsEURExchangeRate() {
-		//Arrange
-		ConverterSvc converterSvc = new ConverterSvc();
-		
 		//Act
 		double actual = converterSvc.getExchangeRate("eur");
 		
