@@ -53,4 +53,54 @@ public class ConverterSvcTest {
 		double expected = 100;
 		assertEquals(expected, actual);
 	}
+	
+	@Test
+	public void convertBitcoins_2BitCoinToUSD_ReturnsUSDollars() {
+		//Act
+		double actual = converterSvc.convertBitcoins("usd", 2);
+		
+		//Assert
+		double expected = 200;
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void convertBitcoins_1BitCoinToGBP_ReturnsGBPounds() {
+		//Act
+		double actual = converterSvc.convertBitcoins("gbp", 1);
+		
+		//Assert
+		double expected = 200;
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void convertBitcoins_2BitCoinToGBP_ReturnsGBPounds() {
+		//Act
+		double actual = converterSvc.convertBitcoins("gbp", 2);
+		
+		//Assert
+		double expected = 400;
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void convertBitcoins_1BitCoinToEUR_ReturnsEuros() {
+		//Act
+		double actual = converterSvc.convertBitcoins("eur", 1);
+		
+		//Assert
+		double expected = 300;
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void convertBitcoins_2BitCoinToEUR_ReturnsEuros() {
+		//Act
+		double actual = converterSvc.convertBitcoins("eur", 2);
+		
+		//Assert
+		double expected = 600;
+		assertEquals(expected, actual);
+	}
 }
