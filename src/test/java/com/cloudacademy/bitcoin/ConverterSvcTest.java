@@ -43,4 +43,14 @@ public class ConverterSvcTest {
 		double expected = 300;
 		assertEquals(expected, actual);
 	}
+	
+	@Test
+	public void convertBitcoins_1BitCoinToUSD_ReturnsUSDollars() {
+		//Act
+		double actual = converterSvc.convertBitcoins("usd", 1);
+		
+		//Assert
+		double expected = 100;
+		assertEquals(expected, actual);
+	}
 }
