@@ -5,7 +5,7 @@ public class ConverterSvc {
 		super();
 	}
 	
-	public int getExchangeRate(String currency) {
+	public double getExchangeRate(String currency) {
 		if (currency.equalsIgnoreCase("usd")) {
 			return 100;
 		} else if (currency.equalsIgnoreCase("gbp")) {
@@ -14,5 +14,9 @@ public class ConverterSvc {
 			return 300;
 		}
 		return 0;
+	}
+	
+	public double convertBitcoins(String currency, double coins) {
+		return coins * getExchangeRate(currency);
 	}
 }
