@@ -17,7 +17,7 @@ public class ConverterSvc {
 	private final String BITCOIN_CURRPRICE_URL = "https://api.coindesk.com/v1/bpi/currentprice.json";
 	private final HttpGet httpGet = new HttpGet(BITCOIN_CURRPRICE_URL);
 	
-	private CloseableHttpClient httpClient;
+	private final CloseableHttpClient httpClient;
 	
 	public ConverterSvc() {
 		super();
