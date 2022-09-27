@@ -5,6 +5,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,7 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 public class ConverterSvcTest {
@@ -57,7 +60,7 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.getExchangeRate("USD");
+		double actual = converterSvc.getExchangeRate(Currency.USD);
 		
 		//Assert
 		double expected = 11486.5341;
@@ -74,7 +77,7 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.getExchangeRate("GBP");
+		double actual = converterSvc.getExchangeRate(Currency.GBP);
 
 		//Assert
 		double expected = 8900.8693;
@@ -91,7 +94,7 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.getExchangeRate("EUR");
+		double actual = converterSvc.getExchangeRate(Currency.EUR);
 
 		//Assert
 		double expected = 9809.3278;
@@ -108,7 +111,7 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.convertBitcoins("USD", 1);
+		double actual = converterSvc.convertBitcoins(Currency.USD, 1);
 
 		//Assert
 		double expected = 11486.5341;
@@ -125,7 +128,7 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.convertBitcoins("USD", 2);
+		double actual = converterSvc.convertBitcoins(Currency.USD, 2);
 
 		//Assert
 		double expected = 11486.5341 * 2;
@@ -142,7 +145,7 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.convertBitcoins("GBP", 1);
+		double actual = converterSvc.convertBitcoins(Currency.GBP, 1);
 
 		//Assert
 		double expected = 8900.8693;
@@ -159,7 +162,7 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.convertBitcoins("GBP", 2);
+		double actual = converterSvc.convertBitcoins(Currency.GBP, 2);
 
 		//Assert
 		double expected = 8900.8693 * 2;
@@ -176,7 +179,7 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.convertBitcoins("EUR", 1);
+		double actual = converterSvc.convertBitcoins(Currency.EUR, 1);
 
 		//Assert
 		double expected = 9809.3278;
@@ -193,10 +196,43 @@ public class ConverterSvcTest {
 		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
 		
 		//Act
-		double actual = converterSvc.convertBitcoins("EUR", 2);
+		double actual = converterSvc.convertBitcoins(Currency.EUR, 2);
 
 		//Assert
 		double expected = 9809.3278 * 2;
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void getExchangeRate_ThrowsException() throws IOException {
+		//Arrange
+		Mockito.when(statusLine.getStatusCode()).thenReturn(200);
+		Mockito.when(response.getStatusLine()).thenReturn(statusLine);
+		Mockito.when(response.getEntity()).thenReturn(entity);
+		Mockito.when(entity.getContent()).thenReturn(stream);
+		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
+		
+		doThrow(IOException.class).when(response).close();
+		
+		//Act
+		double actual = converterSvc.getExchangeRate(Currency.EUR);
+		
+		//Assert
+		double expected = 0;
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void convertBitCoins_NegativeCoins_ThrowsException() throws IOException {
+		//Arrange
+		Mockito.when(statusLine.getStatusCode()).thenReturn(200);
+		Mockito.when(response.getStatusLine()).thenReturn(statusLine);
+		Mockito.when(response.getEntity()).thenReturn(entity);
+		Mockito.when(entity.getContent()).thenReturn(stream);
+		Mockito.when(client.execute(any(HttpGet.class))).thenReturn(response);
+		
+		//Act and Assert
+		Assertions.assertThrows(IllegalArgumentException.class,
+				() -> converterSvc.convertBitcoins(Currency.GBP, -1));
 	}
 }

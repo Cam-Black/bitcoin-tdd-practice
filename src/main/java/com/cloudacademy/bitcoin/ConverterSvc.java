@@ -29,27 +29,35 @@ public class ConverterSvc {
 		this.httpClient = client;
 	}
 	
-	public double getExchangeRate(String currency) {
-		double rate = 0;
-		try {
-			CloseableHttpResponse response = this.httpClient.execute(httpGet);
+	public double getExchangeRate(Currency currency) {
+		double rate;
+		try (CloseableHttpResponse response = this.httpClient.execute(httpGet)) {
 			
 			InputStream inputStream = response.getEntity().getContent();
 			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 			
 			JsonObject jsonObject = JsonParser.parseReader(br).getAsJsonObject();
 			String n =
-					jsonObject.get("bpi").getAsJsonObject().get(currency).getAsJsonObject().get("rate").getAsString();
+					jsonObject.get("bpi").getAsJsonObject().get(currency.getCurrency()).getAsJsonObject().get("rate").getAsString();
 			NumberFormat nf = NumberFormat.getInstance();
 			rate = nf.parse(n).doubleValue();
 			
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
+			rate = 0;
 		}
 		return rate;
 	}
 	
-	public double convertBitcoins(String currency, double coins) {
+	public double convertBitcoins(Currency currency, double coins) {
+		if (coins < 0) {
+			throw new IllegalArgumentException("Coins can't be less than 0");
+		}
 		return coins * getExchangeRate(currency);
+	}
+	
+	public static void main(String[] args) {
+		ConverterSvc converter = new ConverterSvc();
+		System.out.println(converter.convertBitcoins(Currency.GBP, 2));
 	}
 }
